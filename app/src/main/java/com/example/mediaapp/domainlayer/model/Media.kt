@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class Media {
-    @field:PrimaryKey
-    var id: Int ?= 0
-}
+class Media(@field:PrimaryKey
+            var id: String,
+            var name: String)

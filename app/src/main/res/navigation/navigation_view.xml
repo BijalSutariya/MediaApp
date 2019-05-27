@@ -6,5 +6,10 @@
             app:startDestination="@id/ytFragment">
 
     <fragment android:id="@+id/ytFragment" android:name="com.example.mediaapp.clientlayer.presentations.fragment.YtFragment"
-              android:label="fragment_yt" tools:layout="@layout/fragment_yt"/>
+              android:label="fragment_yt" tools:layout="@layout/fragment_yt">
+        <action android:id="@+id/action_ytFragment_to_testFragment" app:destination="@id/testFragment"/>
+    </fragment>
+    <fragment android:id="@+id/testFragment"
+              android:name="com.example.mediaapp.clientlayer.presentations.fragment.TestFragment"
+              android:label="fragment_test" tools:layout="@layout/fragment_test"/>
 </navigation>

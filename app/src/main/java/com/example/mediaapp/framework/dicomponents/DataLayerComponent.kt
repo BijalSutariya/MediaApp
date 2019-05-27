@@ -9,6 +9,5 @@ import javax.inject.Singleton
 @Component(modules = [NetworkModule::class, DatabaseModule::class])
 @Singleton
 interface DataLayerComponent {
-
     fun doInjection(mediaRepository: MediaRepository)
 }
