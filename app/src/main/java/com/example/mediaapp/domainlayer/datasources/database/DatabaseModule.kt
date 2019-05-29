@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.mediaapp.domainlayer.model.Media
+import com.example.mediaapp.domainlayer.model.Response
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -26,7 +27,7 @@ class DatabaseModule constructor(private var context: Context) {
         val mediaList: LiveData<List<Media>>
 
         @Insert(onConflict = OnConflictStrategy.REPLACE)
-        fun insert(mediaList: List<Media>): LongArray
+        fun insert(mediaList: List<Media>)
 
         @Query("SELECT * from media WHERE id = :id")
         fun getMovie(id: String): LiveData<Media>

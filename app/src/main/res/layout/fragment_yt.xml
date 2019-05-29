@@ -3,22 +3,26 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View"/>
-        <variable name="media"
-                  type="com.example.mediaapp.domainlayer.model.Media"/>
+        <import
+                type="android.view.View"/>
+        <variable name="mediaPresenter"
+                  type="com.example.mediaapp.clientlayer.presentations.MediaPresenter"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <TextView
-                android:id="@+id/tvText"
-                android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDataList"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={media.name}"
+                android:layout_margin="10dp"
+                app:postList="@{mediaPresenter.mediaList}"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

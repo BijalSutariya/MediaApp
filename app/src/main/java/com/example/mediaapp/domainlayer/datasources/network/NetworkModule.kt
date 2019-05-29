@@ -1,15 +1,19 @@
 package com.example.mediaapp.domainlayer.datasources.network
 
+import com.example.mediaapp.domainlayer.model.Media
+import com.example.mediaapp.domainlayer.model.Response
 import com.example.mediaapp.framework.BaseApp
 import com.example.mediaapp.framework.helpers.NetworkUtil
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Observable
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,14 +24,16 @@ class NetworkModule constructor(var baseApp: BaseApp) {
     @Provides
     @Singleton
     fun getHttpClient(): OkHttpClient {
-        val interceptor = Interceptor {chain->
+        val interceptor = Interceptor { chain ->
             val originalResponse = chain.proceed(chain.request())
-            if (NetworkUtil.isNetworkConnected(baseApp)){
+            if (NetworkUtil.isNetworkConnected(baseApp)) {
                 val maxAge = 60 // read from cache for 1 minute
-                return@Interceptor originalResponse.newBuilder().header("Cache-Control", "public, max-age=$maxAge").build()
-            }else {
+                return@Interceptor originalResponse.newBuilder().header("Cache-Control", "public, max-age=$maxAge")
+                    .build()
+            } else {
                 val maxStale = 60 * 60 * 24 * 28 // tolerate 4-weeks stale
-                return@Interceptor originalResponse.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=$maxStale").build()
+                return@Interceptor originalResponse.newBuilder()
+                    .header("Cache-Control", "public, only-if-cached, max-stale=$maxStale").build()
             }
         }
 
@@ -42,10 +48,9 @@ class NetworkModule constructor(var baseApp: BaseApp) {
     @Inject
     fun getRetrofitClient(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiUrls.baseUrl).client(okHttpClient)
+            .baseUrl("https://jsonplaceholder.typicode.com").client(okHttpClient)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(ApiUrls.baseUrl)
             .build()
     }
 
@@ -56,8 +61,9 @@ class NetworkModule constructor(var baseApp: BaseApp) {
         return retrofit.create<MediaApiList>(MediaApiList::class.java)
     }
 
-    interface MediaApiList{
-
+    interface MediaApiList {
+        @GET("/posts")
+        fun mediaList(): Observable<List<Media>>
     }
 
 }
