@@ -30,7 +30,7 @@ class DatabaseModule constructor(private var context: Context) {
         fun insert(mediaList: List<Media>)
 
         @Query("SELECT * from media WHERE id = :id")
-        fun getMovie(id: String): LiveData<Media>
+        fun getMovie(id: Int): LiveData<Media>
 
         @Query("DELETE FROM media")
         fun removeAllMedia()

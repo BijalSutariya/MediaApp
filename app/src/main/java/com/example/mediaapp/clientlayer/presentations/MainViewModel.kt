@@ -11,12 +11,12 @@ import com.example.mediaapp.domainlayer.repositories.MediaRepository
 import javax.inject.Inject
 class MainViewModel @Inject constructor(private var repository: MediaRepository):ViewModel() {
 
-
+    private var mediaIdLiveData: MutableLiveData<Int> = MutableLiveData()
     private var mediaListData:MutableLiveData<List<Media>> = MutableLiveData()
     private var mediaListTrigger:MutableLiveData<Boolean> = MutableLiveData()
 
     fun getResponseList() :LiveData<DataRequest<List<Media>>>{
-        return Transformations.switchMap(mediaListTrigger) { reponse -> repository.getMediaList() }
+        return Transformations.switchMap(mediaListTrigger) { repository.getMediaList() }
     }
 
     fun getMediaList(): MutableLiveData<List<Media>> {
@@ -25,6 +25,14 @@ class MainViewModel @Inject constructor(private var repository: MediaRepository)
 
     fun getMediaListTrigger(): MutableLiveData<Boolean> {
         return mediaListTrigger
+    }
+
+    fun getMediaIdInt(): MutableLiveData<Int> {
+        return mediaIdLiveData
+    }
+
+    fun getMediaDetails():LiveData<DataRequest<Media>>{
+        return Transformations.switchMap(mediaIdLiveData){newMediaId->repository.getMediaDetails(newMediaId)}
     }
 
 

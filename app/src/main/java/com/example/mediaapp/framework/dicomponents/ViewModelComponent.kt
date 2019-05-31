@@ -1,5 +1,6 @@
 package com.example.mediaapp.framework.dicomponents
 
+import com.example.mediaapp.clientlayer.presentations.fragment.DetailsFragment
 import com.example.mediaapp.clientlayer.presentations.fragment.YtFragment
 import com.example.mediaapp.viewmodellayer.ViewModelModule
 import dagger.Component
@@ -9,4 +10,5 @@ import javax.inject.Singleton
 @Singleton
 interface ViewModelComponent {
     fun doInjection(ytFragment: YtFragment)
+    fun doInjection(testFragment: DetailsFragment)
 }

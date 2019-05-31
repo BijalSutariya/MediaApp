@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mediaapp.R
 import com.example.mediaapp.clientlayer.presentations.MainViewModel
 import com.example.mediaapp.clientlayer.presentations.MediaPresenter
 import com.example.mediaapp.clientlayer.presentations.ViewController
@@ -63,7 +65,7 @@ class YtFragment : Fragment(), ViewController {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.savedInstanceState = savedInstanceState
-        setUpInitialThings()
+        setUpInitialThings(view)
 
         val presenter = MediaPresenter(viewModel, this, MediaPresenter.PresenterType.LIST)
         fragmentYtBinding.mediaPresenter = presenter
@@ -71,9 +73,13 @@ class YtFragment : Fragment(), ViewController {
         presenter.getTrigger().value=true
     }
 
-    private fun setUpInitialThings() {
+    private fun setUpInitialThings(view: View) {
         val ytAdapter= object : YtAdapter(){
-
+            override fun onMediaItemClicked(id: Int) {
+                val bundle = Bundle()
+                bundle.putInt("mediaId",id)
+                Navigation.findNavController(view).navigate(R.id.testFragment,bundle)
+            }
         }
         fragmentYtBinding.rvDataList.layoutManager = LinearLayoutManager(activity)
         fragmentYtBinding.rvDataList.adapter = ytAdapter
@@ -99,6 +105,7 @@ class YtFragment : Fragment(), ViewController {
             this.mediaList = mediaList
             notifyDataSetChanged()
         }
+        internal abstract fun onMediaItemClicked(id: Int)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val binding = YtItemListBinding.inflate(layoutInflater, parent, false)
@@ -111,11 +118,12 @@ class YtFragment : Fragment(), ViewController {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val media = mediaList[position]
+            holder.ytItemListBinding.root.setOnClickListener { onMediaItemClicked(media.id) }
             holder.bind(media)
 
         }
 
-        inner class ViewHolder(private val ytItemListBinding: YtItemListBinding) :
+        inner class ViewHolder(val ytItemListBinding: YtItemListBinding) :
             RecyclerView.ViewHolder(ytItemListBinding.root) {
 
             fun bind(media: Media) {

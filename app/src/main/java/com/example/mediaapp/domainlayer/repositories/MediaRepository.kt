@@ -22,7 +22,6 @@ class MediaRepository
 constructor() {
     @Inject
     lateinit var taskExecutor: TaskExecutors
-
     @Inject
     lateinit var mediaApiList: NetworkModule.MediaApiList
     @Inject
@@ -36,7 +35,7 @@ constructor() {
 
     fun getMediaList(): LiveData<DataRequest<List<Media>>> {
 
-        return object : DataManager<DataRequest<List<Media>>,List<Media>>(taskExecutor){
+        return object : DataManager<DataRequest<List<Media>>, List<Media>>(taskExecutor) {
             override fun loadFromDatabase(): LiveData<List<Media>> {
                 return mediaDatabase.mediaDao().mediaList
             }
@@ -46,12 +45,12 @@ constructor() {
                 mediaApiList.mediaList()
                     .subscribeOn(Schedulers.from(taskExecutors.networkOperationThread))
                     .observeOn(Schedulers.from(taskExecutor.mainThread))
-                    .subscribe(NetworkOperationObserver(responseFromNetwork,this))
+                    .subscribe(NetworkOperationObserver(responseFromNetwork, this))
                 return responseFromNetwork
             }
 
             override fun shouldFetchData(data: List<Media>): Boolean {
-                return true
+                return data.isEmpty()
             }
 
             override fun saveDataToDatabase(data: List<Media>) {
@@ -62,7 +61,7 @@ constructor() {
             }
 
             override fun processResponse(response: DataRequest<List<Media>>): List<Media>? {
-                return if(response.data == null)
+                return if (response.data == null)
                     null
                 else
                     response.data
@@ -70,6 +69,33 @@ constructor() {
 
         }.toLiveData()
 
+    }
+
+    fun getMediaDetails(newMediaId: Int): LiveData<DataRequest<Media>>? {
+        return object : DataManager<Media, Media>(taskExecutor) {
+            override fun loadFromDatabase(): LiveData<Media> {
+                return mediaDatabase.mediaDao().getMovie(newMediaId)
+            }
+
+            override fun loadFromNetwork(): LiveData<Media>? {
+                return null
+            }
+
+            override fun shouldFetchData(data: Media): Boolean {
+                return false
+            }
+
+            override fun saveDataToDatabase(data: Media) {
+            }
+
+            override fun clearPreviousData() {
+            }
+
+            override fun processResponse(response: Media): Media? {
+                return null
+            }
+
+        }.toLiveData()
     }
 
 

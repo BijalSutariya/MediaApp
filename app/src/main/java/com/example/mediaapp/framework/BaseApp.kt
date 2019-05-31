@@ -8,10 +8,14 @@ import com.example.mediaapp.framework.dicomponents.DaggerViewModelComponent
 import com.example.mediaapp.framework.dicomponents.DataLayerComponent
 import com.example.mediaapp.framework.dicomponents.ViewModelComponent
 import com.example.mediaapp.viewmodellayer.ViewModelModule
+import com.facebook.stetho.Stetho
 
 class BaseApp : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        Stetho.initializeWithDefaults(this);
+
         setDataLayerComponent()
         setViewModelComponent()
     }
